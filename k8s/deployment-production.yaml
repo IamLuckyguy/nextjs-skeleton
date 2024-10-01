@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front
+  namespace: kwt-production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      project: kwt
+      app: front
+      env: production
+  template:
+    metadata:
+      labels:
+        project: kwt
+        app: front
+        env: production
+    spec:
+      containers:
+        - name: front
+          image: wondookong/kwt-production-front:latest
+          ports:
+          - containerPort: 3000
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
